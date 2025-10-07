@@ -1,1 +1,3 @@
-# gfl2-gunsmoke-frontline-team-score-aggregator
+# ドールズフロントライン2：エクシリウム 塵煙前線 チームスコア集計ツール
+
+作成中。。。
