@@ -1,0 +1,50 @@
+{
+  "name": "gfl2-gunsmoke-frontline-team-score-aggregator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rm -rf dist && node esbuild.mjs",
+    "startbot": "node --no-warnings=DEP0040,DEP0169 --env-file-if-exists=.env dist/index.js",
+    "startbot:dev": "node --env-file=.env node_modules/.bin/tsx --watch src/index.ts",
+    "command:register": "node --env-file=.env node_modules/.bin/tsx  src/discord/registerCommand.ts",
+    "comment": "↓単発実行用。実行例 npm run execute:dev src/index.ts",
+    "execute:dev": "node --env-file=.env node_modules/.bin/tsx -- "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:oziborn/gfl2-gunsmoke-frontline-team-score-aggregator.git"
+  },
+  "author": "oziborn",
+  "license": "GPL-3.0-only",
+  "dependencies": {
+    "@google-cloud/vision": "^5.3.3",
+    "@types/node-fetch": "^2.6.13",
+    "discord.js": "^14.23.2",
+    "keyv": "^5.5.3",
+    "node-fetch": "^2.7.0",
+    "pino": "^10.0.0",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@eslint/compat": "^1.4.0",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.37.0",
+    "@keyv/mongo": "^3.0.5",
+    "@types/node": "^24.7.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.0",
+    "@typescript-eslint/parser": "^8.46.0",
+    "esbuild": "^0.25.10",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-import-alias": "^1.2.0",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
+    "prettier-eslint": "^16.4.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.0"
+  }
+}
