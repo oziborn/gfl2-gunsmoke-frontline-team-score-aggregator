@@ -26,7 +26,11 @@ client.on(Events.MessageCreate, (message: Message) => {
 
   requestContext.run({ requestId: uuidv4() }, async () => {
     logger.info({ msg: 'START', message });
-    await handler(message);
+    try {
+      await handler(message);
+    } catch (err) {
+      logger.error(err);
+    }
     logger.info({ msg: 'END' });
   });
 });

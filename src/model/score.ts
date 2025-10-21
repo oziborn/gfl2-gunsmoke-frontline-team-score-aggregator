@@ -1,3 +1,5 @@
+import { convertJapaneseUpperCase } from '@/utils/common';
+
 /**
  * チームメンバー1人1人のスコア
  */
@@ -10,21 +12,33 @@ export type Score = {
  */
 export const analyticsTexts = (texts: string[], users: string[]) => {
   const summary: Score = {};
+  const correctedUsers = getCorrectedUsers(users);
 
   texts.forEach((text) => {
+    // 解析中に ユーザ名 → スコア の並び順で出現するとは限らないため、名前とスコアが揃ったら追加する
     let latestUser = '';
+    let latestScore = 0;
+
     text.split('\n').forEach((word) => {
-      // チームメンバーの名前と一致する単語
-      if (users.includes(word)) {
-        latestUser = word;
-        if (!(word in summary)) {
-          summary[word] = [];
+      // 1組のユーザとスコアが揃ったら追加してリセット
+      if (latestUser && latestScore) {
+        summary[latestUser].push(latestScore);
+        latestUser = '';
+        latestScore = 0;
+      }
+
+      // チームメンバーの名前と一致する単語かチェック
+      const user = correctedUsers[convertJapaneseUpperCase(word)];
+      if (user) {
+        latestUser = user;
+        if (!(user in summary)) {
+          summary[user] = [];
         }
         return;
       }
 
-      // 1日に1人3回まで挑戦できるため、すでにスコアが3つある場合はcontinue
-      if (latestUser && summary[latestUser].length > 3) {
+      // 1日に1人3回まで挑戦できるため、既にあるユーザにスコアが3つある場合はcontinue
+      if (latestUser && summary[latestUser].length === 3) {
         return;
       }
 
@@ -34,8 +48,9 @@ export const analyticsTexts = (texts: string[], users: string[]) => {
         // 4桁の数字 but 数字が低すぎる = スコアではない可能性が高いためcontinue
         if (score < 5000) {
           return;
+        } else {
+          latestScore = score;
         }
-        summary[latestUser].push(score);
       }
     });
   });
@@ -54,4 +69,16 @@ export const mergeScoreAndUsers = (score: Score, users: string[]) => {
     }
   });
   return mergedScore;
+};
+
+/**
+ * OCR結果で ひらがな カタカナ の大文字/小文字の読み取り精度が低いため、
+ * 大文字でのユーザ名を加えたオブジェクトを返す
+ */
+export const getCorrectedUsers = (users: string[]) => {
+  const correctedUsers: { [upperCaseUserName: string]: string } = {};
+  users.forEach((user) => {
+    correctedUsers[convertJapaneseUpperCase(user)] = user;
+  });
+  return correctedUsers;
 };
